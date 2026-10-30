@@ -54,7 +54,7 @@ typedef struct {
 
 static LIBMTP_mtpdevice_t *dev;
 static uint32_t storage_id;
-static int opt_ro = 0, opt_debug = 0;
+static int opt_ro = 0, opt_debug = 0, opt_nolocal = 0;
 static volatile int mounted = 0; /* set once macFUSE calls init */
 static char tmpdir[1024];
 static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER; /* libmtp is not thread-safe */
@@ -558,8 +558,9 @@ static const struct fuse_operations ops = {
 
 /* ------------------------------------------------------------------ main */
 static void usage(FILE *o) {
-  fprintf(o, "usage: kindle-mtpfs [--ro] [--debug] [--fuse-opt OPTS] /Volumes/Kindle\n"
+  fprintf(o, "usage: kindle-mtpfs [--ro] [--debug] [--no-local] [--fuse-opt OPTS] /Volumes/Kindle\n"
              "  --ro        read-only: every change returns 'Read-only file system'\n"
+             "  --no-local  mount as a non-local volume (hidden from Finder's Locations)\n"
              "  --debug     log each MTP operation\n"
              "  --fuse-opt  extra comma-separated macFUSE mount options\n"
              "Normally started by kindle-mount. Quit Calibre/kpush first.\n");
@@ -576,6 +577,7 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     if (!strcmp(argv[i], "--ro")) opt_ro = 1;
     else if (!strcmp(argv[i], "--debug")) opt_debug = 1;
+    else if (!strcmp(argv[i], "--no-local")) opt_nolocal = 1;
     else if (!strcmp(argv[i], "--fuse-opt") && i + 1 < argc) extra = argv[++i];
     else if (!strcmp(argv[i], "--help") || !strcmp(argv[i], "-h")) { usage(stdout); return 0; }
     else if (argv[i][0] == '-') { fprintf(stderr, "unknown option %s\n", argv[i]); usage(stderr); return 2; }
@@ -604,8 +606,11 @@ int main(int argc, char **argv) {
   if (!mkdtemp(tmpdir)) { perror("mkdtemp"); no_reset_on_close(dev); LIBMTP_Release_Device(dev); return 2; }
 
   char opts[1024];
-  snprintf(opts, sizeof opts, "backend=fskit,volname=Kindle,fsname=Kindle%s%s%s",
-           opt_ro ? ",ro" : "", extra ? "," : "", extra ? extra : "");
+  /* "local" makes macOS treat the volume like a USB stick: Finder lists it under
+     Locations with an eject button. Without it macFUSE volumes count as
+     network-like and only show up in /Volumes. */
+  snprintf(opts, sizeof opts, "backend=fskit,volname=Kindle,fsname=Kindle%s%s%s%s",
+           opt_nolocal ? "" : ",local", opt_ro ? ",ro" : "", extra ? "," : "", extra ? extra : "");
   char *fargv[] = { argv[0], "-f", "-s", "-o", opts, (char *)mnt, NULL };
   printf("mounting at %s (%s)\n", mnt, opts);
   int rc = fuse_main(6, fargv, &ops, NULL);
