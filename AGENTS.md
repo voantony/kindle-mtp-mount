@@ -83,7 +83,7 @@ Kindle are permanent** (there's no Trash on the device).
 
 8. **Hand over.** Tell the human:
    - `kindle-mount` mounts read-write and `kindle-mount --ro` read-only.
-   - The drive is at `/Volumes/Kindle` and in Finder's sidebar.
+   - The drive is at `/Volumes/Kindle` and in Finder's sidebar under Locations, with an eject button.
    - Deletes there are permanent.
    - Eject it in Finder or run `kindle-unmount` before using Calibre again.
    - The log is at `~/Library/Logs/kindle-mount.log`.

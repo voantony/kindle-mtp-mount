@@ -87,8 +87,13 @@ kindle-mount --ro      # read-only: every change is refused
 kindle-unmount         # unmount and give the Kindle back to Calibre etc.
 ```
 
-The drive appears at `/Volumes/Kindle` and in Finder's sidebar. Ejecting it
-in Finder works too. Logs go to `~/Library/Logs/kindle-mount.log`.
+The drive appears at `/Volumes/Kindle` and in Finder's sidebar under
+**Locations** with an eject button, like a USB stick. Ejecting it there
+unmounts it and releases the Kindle. It's mounted as a "local" macFUSE volume
+for this; macFUSE calls that option experimental, so `kindle-mount --no-local`
+mounts it the old way (reachable at `/Volumes/Kindle`, but not listed in
+Locations). Spotlight doesn't index it, and macOS's `.Trashes`, `.fseventsd`
+and `._*` files are refused, so nothing extra gets written to the Kindle. Logs go to `~/Library/Logs/kindle-mount.log`.
 
 If the Kindle is busy, `kindle-mount` says so and stops. It never retries in a
 loop and never resets the USB connection.

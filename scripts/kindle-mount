@@ -1,6 +1,6 @@
 #!/bin/bash
 # kindle-mount: show the Kindle in Finder as a drive named "Kindle".
-# usage: kindle-mount [--ro] [--debug]
+# usage: kindle-mount [--ro] [--debug] [--no-local]
 set -u
 MNT=/Volumes/Kindle
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -11,8 +11,8 @@ redact() { sed -E 's/G[0-9A-Z]{3,}/GR…(redacted)/g'; }
 ARGS=()
 for a in "$@"; do
   case "$a" in
-    --ro|--debug) ARGS+=("$a") ;;
-    -h|--help) echo "usage: kindle-mount [--ro] [--debug]   (read-write unless --ro)"; exit 0 ;;
+    --ro|--debug|--no-local) ARGS+=("$a") ;;
+    -h|--help) echo "usage: kindle-mount [--ro] [--debug] [--no-local]   (read-write unless --ro; --no-local hides it from Finder's Locations)"; exit 0 ;;
     *) echo "unknown option: $a" >&2; exit 2 ;;
   esac
 done
