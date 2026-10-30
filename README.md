@@ -1,21 +1,27 @@
 # kindle-mtp-mount
 
+Shows a Kindle that's plugged into a Mac by USB as a removable drive called
+**Kindle** in Finder, listed under **Locations** with an eject button, like a
+USB stick. You can browse it, copy books off it, and drag files onto it.
+
+<p align="center"><img src="docs/images/finder-kindle.png" width="380" alt="A Kindle Colorsoft's files in a Finder window titled Kindle"></p>
+<p align="center"><sub>A Kindle Colorsoft open in Finder.</sub></p>
+
 ## Install
 
+- **App (easiest):** download **[Mount-Kindle-0.1.1.dmg](https://github.com/voantony/kindle-mtp-mount/releases/download/v0.1.1/Mount-Kindle-0.1.1.dmg)**
+  from the [latest release](https://github.com/voantony/kindle-mtp-mount/releases/latest),
+  drag **Mount Kindle** to Applications, and open it (right-click → **Open**
+  the first time; see [First launch](#mac-app)). You also need
+  [macFUSE](https://macfuse.github.io/) 5.x with its file system extension
+  turned on; see [Setup](#setup).
 - **With your AI agent:** give it this repo's link
   (`https://github.com/voantony/kindle-mtp-mount`). [AGENTS.md](AGENTS.md)
-  tells it what to run and which steps you have to do yourself.
-- **App:** `Mount Kindle.app` is a menu-bar app with Mount, Unmount and Open in
-  Finder. There's no published release yet, so build it yourself:
-  `app/build-app.sh` (needs Xcode or the command line tools, macFUSE and
-  Homebrew libmtp). It's written to `dist/`. See [Mac app](#mac-app).
-- **Manually:** install [macFUSE](https://macfuse.github.io/) 5.x and
-  [Homebrew](https://brew.sh), then run `./install.sh` in a copy of this repo.
-  After that, complete the one-time step in [Setup](#setup).
-
-Shows a Kindle that's plugged into a Mac by USB as a normal drive called
-**Kindle** in Finder. You can browse it, copy books off it, and drag files
-onto it.
+  tells it what to run and which steps you have to do yourself, and
+  [install.sh](install.sh) does the rest.
+- **Manually (command line):** install [macFUSE](https://macfuse.github.io/)
+  5.x and [Homebrew](https://brew.sh), then run `./install.sh` in a copy of
+  this repo. After that, complete the one-time step in [Setup](#setup).
 
 Newer Kindles (for example the Kindle Colorsoft) connect over MTP, the same
 phone-style protocol Android uses. macOS doesn't show MTP devices in Finder.
@@ -23,7 +29,9 @@ This small program bridges the gap. It talks MTP with
 [libmtp](https://github.com/libmtp/libmtp) and presents the files to macOS
 through [macFUSE](https://macfuse.github.io/).
 
-**Read-write.** Copying, renaming, creating folders and deleting all work.
+**Read-write by default.** Copying, renaming, creating folders and deleting
+all work. Use `kindle-mount --ro` or the app's **Read-only** switch to only
+browse.
 **Deletes are immediate and permanent.** There's no Trash on the Kindle, so
 anything you delete there is gone.
 
@@ -40,13 +48,19 @@ macOS 27.2, macFUSE 5.5 (FSKit backend) and libmtp 1.1.23:
   reached the Kindle.
 - The drive showed up at `/Volumes/Kindle`. After unmounting, the Kindle was
   free for other MTP tools right away, with no replug.
+- 31 October 2026, version 0.1.1: mounted as a local volume, macOS reports it
+  as local, removable and ejectable (like a mounted disk image), so Finder
+  lists it under Locations. Ejecting it the way Finder does unmounted it and
+  released the Kindle. Read-write still worked in a scratch folder, and an
+  idle read-write mount wrote nothing to the Kindle.
 
 ## Requirements
 
 - macOS 15.4 or later, on Apple silicon
 - [macFUSE](https://macfuse.github.io/) 5.x, with its file system extension
   turned on (see Setup)
-- libmtp 1.1.23 from Homebrew: `brew install libmtp`
+- libmtp 1.1.23 from Homebrew: `brew install libmtp` (not needed for the app,
+  which bundles it)
 
 ## Setup
 
@@ -101,7 +115,13 @@ loop and never resets the USB connection.
 ## Mac app
 
 `Mount Kindle.app` puts a book icon in the menu bar with **Mount**,
-**Unmount**, **Open in Finder**, a **Read-only** switch and **Quit**. It runs
+**Unmount**, **Open in Finder**, a **Read-only** switch and **Quit**.
+
+<p align="center"><img src="docs/images/menu-illustration.png" width="440" alt="Illustration of the Mount Kindle menu: Mounted at /Volumes/Kindle, Mount, Unmount, Open in Finder, Read-only, Quit"></p>
+<p align="center"><sub>Illustration of the menu while mounted, drawn from the app's menu items (not a screenshot).</sub></p>
+
+Download it from the [latest release](https://github.com/voantony/kindle-mtp-mount/releases/latest)
+(`.dmg` or `.zip`), or build it yourself (below). It runs
 the same `kindle-mtpfs` helper, bundled inside the app together with libmtp
 and libusb, so Homebrew isn't needed on a Mac that only runs the app. macFUSE
 still has to be installed and its file system extension turned on (see Setup).
