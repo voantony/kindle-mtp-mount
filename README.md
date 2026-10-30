@@ -1,5 +1,17 @@
 # kindle-mtp-mount
 
+## Install
+
+- **With your AI agent:** give it this repo's link
+  (`https://github.com/voantony/kindle-mtp-mount`). [AGENTS.md](AGENTS.md)
+  tells it what to run and which steps you have to do yourself.
+- **App download:** a double-click `Kindle Mount.app` will be on the
+  [Releases](https://github.com/voantony/kindle-mtp-mount/releases) page once
+  it's published.
+- **Manually:** install [macFUSE](https://macfuse.github.io/) 5.x and
+  [Homebrew](https://brew.sh), then run `./install.sh` in a copy of this repo.
+  After that, complete the one-time step in [Setup](#setup).
+
 Shows a Kindle that's plugged into a Mac by USB as a normal drive called
 **Kindle** in Finder. You can browse it, copy books off it, and drag files
 onto it.
@@ -51,9 +63,13 @@ backend, which needs no kernel extension and no security changes to your Mac.
 ## Build and install
 
 ```sh
+./install.sh    # checks requirements, builds, tests, installs to ~/.local/bin
+                # (safe to re-run; ./install.sh --prefix DIR for another folder)
+
+# or by hand:
 make            # builds ./kindle-mtpfs
 make test       # optional: unit tests against a fake in-memory device
-make install    # copies kindle-mtpfs, kindle-mount, kindle-unmount to ~/kindle-stage/tools
+make install    # copies kindle-mtpfs, kindle-mount, kindle-unmount to ~/.local/bin
                 # (change with: make install PREFIX=/some/dir)
 ```
 
