@@ -14,20 +14,39 @@ through [macFUSE](https://macfuse.github.io/).
 **Deletes are immediate and permanent.** There's no Trash on the Kindle, so
 anything you delete there is gone.
 
-Built for a Kindle Colorsoft (1st gen, USB ID `1949:9981`) on macOS 27 with
-macFUSE 5.5 (FSKit backend) and libmtp 1.1.23. The device connection code has
-been tested on that Kindle. The mounted drive itself has so far only been
-tested with the unit tests (`make test`), because macOS's file system
-extension switch hadn't been turned on yet.
+Tested on 30 October 2026 with a Kindle Colorsoft (1st gen, USB ID `1949:9981`),
+macOS 27.2, macFUSE 5.5 (FSKit backend) and libmtp 1.1.23:
+
+- Read-only mount (`--ro`): browsing the root and about 890 entries in
+  `documents`, reading files with `cat` and `cp`, and copying books off (a
+  7.3 MB book matched `kpush pull` byte for byte by MD5). `touch` and `mkdir`
+  were refused with "Read-only file system".
+- Read-write mount, in a scratch folder only: creating a folder, writing a file
+  and reading it back, overwriting it, renaming it, creating a subfolder and a
+  file inside it, deleting the files and both folders. `.DS_Store` never
+  reached the Kindle.
+- The drive showed up at `/Volumes/Kindle`. After unmounting, the Kindle was
+  free for other MTP tools right away, with no replug.
 
 ## Requirements
 
 - macOS 15.4 or later, on Apple silicon
-- [macFUSE](https://macfuse.github.io/) 5.x. Turn on its file system extension
-  once in **System Settings → General → Login Items & Extensions → File System
-  Extensions → macFUSE**. No kernel extension or Recovery Mode change is needed,
-  because the mount uses macFUSE's FSKit backend.
+- [macFUSE](https://macfuse.github.io/) 5.x, with its file system extension
+  turned on (see Setup)
 - libmtp 1.1.23 from Homebrew: `brew install libmtp`
+
+## Setup
+
+After installing macFUSE, turn on its file system extension once:
+
+**System Settings → General → Login Items & Extensions → File System
+Extensions → macFUSE** (switch it on).
+
+Until you do, mounting fails with "File system extension not enabled".
+
+**Don't enable kernel extensions in Recovery Mode.** That step is only needed
+for macFUSE's older kernel-extension backend. This tool uses the FSKit
+backend, which needs no kernel extension and no security changes to your Mac.
 
 ## Build and install
 
