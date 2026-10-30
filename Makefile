@@ -6,7 +6,7 @@ CC     ?= cc
 CFLAGS ?= -O2 -Wall -Wextra
 CPPFLAGS += -I$(FUSE)/include/fuse3 -I$(BREW)/include
 LDLIBS += -L$(FUSE)/lib -lfuse3 -L$(BREW)/lib -lmtp -lpthread
-PREFIX ?= $(HOME)/kindle-stage/tools
+PREFIX ?= $(HOME)/.local/bin
 
 all: kindle-mtpfs
 
@@ -14,6 +14,7 @@ kindle-mtpfs: src/kindle-mtpfs.c src/redact.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ src/kindle-mtpfs.c $(LDFLAGS) $(LDLIBS)
 
 install: kindle-mtpfs
+	mkdir -p $(PREFIX)
 	install -m 755 kindle-mtpfs scripts/kindle-mount scripts/kindle-unmount $(PREFIX)/
 
 # unit tests: run the FUSE ops against an in-memory fake device (no Kindle, no FUSE needed)

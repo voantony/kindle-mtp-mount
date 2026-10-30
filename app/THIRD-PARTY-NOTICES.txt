@@ -1,0 +1,27 @@
+Mount Kindle: third-party software
+==================================
+
+Mount Kindle itself (the app and the kindle-mtpfs helper) is MIT licensed.
+See LICENSE-kindle-mtp-mount.txt. Source: https://github.com/voantony/kindle-mtp-mount
+
+The app bundles two libraries, unmodified, as separate dynamic libraries in
+Contents/Frameworks. Both are licensed under the GNU Lesser General Public
+License, version 2.1 (COPYING-libmtp.txt, COPYING-libusb.txt). The exact
+versions are in versions.txt.
+
+  libmtp   Copyright (C) 2005-2013 Linus Walleij, Richard A. Low and others
+           Source: https://github.com/libmtp/libmtp
+           Release used: https://github.com/libmtp/libmtp/releases/tag/v1.1.23
+
+  libusb   Copyright (C) the libusb authors
+           Source: https://github.com/libusb/libusb
+           Releases: https://github.com/libusb/libusb/releases
+
+The binaries are Homebrew builds of those releases. Their install names were
+changed to @rpath so they load from inside the app; their code wasn't changed.
+To use a different build, replace the .dylib files in Contents/Frameworks with
+compatible builds (same file names) and re-sign the app ad hoc:
+    codesign --force --deep --sign - "Mount Kindle.app"
+
+macFUSE (https://macfuse.github.io/) is not bundled. Install it separately.
+Its libfuse3 is loaded from /usr/local/lib.

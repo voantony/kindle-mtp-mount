@@ -1,5 +1,18 @@
 # kindle-mtp-mount
 
+## Install
+
+- **With your AI agent:** give it this repo's link
+  (`https://github.com/voantony/kindle-mtp-mount`). [AGENTS.md](AGENTS.md)
+  tells it what to run and which steps you have to do yourself.
+- **App:** `Mount Kindle.app` is a menu-bar app with Mount, Unmount and Open in
+  Finder. There's no published release yet, so build it yourself:
+  `app/build-app.sh` (needs Xcode or the command line tools, macFUSE and
+  Homebrew libmtp). It's written to `dist/`. See [Mac app](#mac-app).
+- **Manually:** install [macFUSE](https://macfuse.github.io/) 5.x and
+  [Homebrew](https://brew.sh), then run `./install.sh` in a copy of this repo.
+  After that, complete the one-time step in [Setup](#setup).
+
 Shows a Kindle that's plugged into a Mac by USB as a normal drive called
 **Kindle** in Finder. You can browse it, copy books off it, and drag files
 onto it.
@@ -51,9 +64,13 @@ backend, which needs no kernel extension and no security changes to your Mac.
 ## Build and install
 
 ```sh
+./install.sh    # checks requirements, builds, tests, installs to ~/.local/bin
+                # (safe to re-run; ./install.sh --prefix DIR for another folder)
+
+# or by hand:
 make            # builds ./kindle-mtpfs
 make test       # optional: unit tests against a fake in-memory device
-make install    # copies kindle-mtpfs, kindle-mount, kindle-unmount to ~/kindle-stage/tools
+make install    # copies kindle-mtpfs, kindle-mount, kindle-unmount to ~/.local/bin
                 # (change with: make install PREFIX=/some/dir)
 ```
 
@@ -75,6 +92,37 @@ in Finder works too. Logs go to `~/Library/Logs/kindle-mount.log`.
 
 If the Kindle is busy, `kindle-mount` says so and stops. It never retries in a
 loop and never resets the USB connection.
+
+## Mac app
+
+`Mount Kindle.app` puts a book icon in the menu bar with **Mount**,
+**Unmount**, **Open in Finder**, a **Read-only** switch and **Quit**. It runs
+the same `kindle-mtpfs` helper, bundled inside the app together with libmtp
+and libusb, so Homebrew isn't needed on a Mac that only runs the app. macFUSE
+still has to be installed and its file system extension turned on (see Setup).
+
+If something is in the way, the menu says so and tells you what to do:
+macFUSE missing, file system extension off (with the exact System Settings
+path), Calibre running, no Kindle plugged in, or the Kindle busy in another
+app. Quitting the app unmounts the Kindle first. Its log is at
+`~/Library/Logs/MountKindle.log`, with the serial masked.
+
+Scripts and AI agents can drive it with `open mountkindle://mount`,
+`open mountkindle://unmount` and `open mountkindle://quit`.
+
+Build it:
+
+```sh
+app/build-app.sh     # writes dist/Mount Kindle.app, dist/Mount-Kindle-<version>.zip and .dmg
+```
+
+**First launch (Gatekeeper).** The app is signed ad hoc, not by an Apple
+Developer ID, so if you downloaded it macOS will block it the first time.
+Either right-click the app and choose **Open**, then confirm, or go to
+**System Settings > Privacy & Security** and click **Open Anyway** after the
+first try. You only have to do this once. An app you built yourself isn't
+quarantined, so it opens normally. Third-party license texts are inside the
+app in `Contents/Resources/Licenses`.
 
 ## How it works
 
