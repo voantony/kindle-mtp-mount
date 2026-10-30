@@ -1,0 +1,49 @@
+#!/bin/bash
+# kindle-mount: show the Kindle in Finder as a drive named "Kindle".
+# usage: kindle-mount [--ro] [--debug]
+set -u
+MNT=/Volumes/Kindle
+DIR="$(cd "$(dirname "$0")" && pwd)"
+BIN="$DIR/kindle-mtpfs"
+LOG="$HOME/Library/Logs/kindle-mount.log"
+PIDF="$HOME/Library/Caches/kindle-mount.pid"
+redact() { sed -E 's/G[0-9A-Z]{3,}/GR…(redacted)/g'; }
+ARGS=()
+for a in "$@"; do
+  case "$a" in
+    --ro|--debug) ARGS+=("$a") ;;
+    -h|--help) echo "usage: kindle-mount [--ro] [--debug]   (read-write unless --ro)"; exit 0 ;;
+    *) echo "unknown option: $a" >&2; exit 2 ;;
+  esac
+done
+if mount | grep -q " on $MNT "; then echo "Kindle is already mounted at $MNT"; exit 0; fi
+if [ -f "$PIDF" ] && kill -0 "$(cat "$PIDF")" 2>/dev/null; then
+  echo "kindle-mtpfs is already running (pid $(cat "$PIDF")); run kindle-unmount first" >&2; exit 1; fi
+if pgrep -qf '/calibre.app/' ; then
+  echo "Calibre is running and would hold the Kindle. Quit Calibre, then run kindle-mount again." >&2; exit 1; fi
+[ -x "$BIN" ] || { echo "missing $BIN (run make install)" >&2; exit 1; }
+mkdir -p "$(dirname "$LOG")" "$(dirname "$PIDF")"
+: > "$LOG"
+nohup "$BIN" ${ARGS[@]+"${ARGS[@]}"} "$MNT" >>"$LOG" 2>&1 </dev/null &
+PID=$!
+echo "$PID" > "$PIDF"
+for i in $(seq 1 180); do
+  if mount | grep -q " on $MNT "; then
+    echo "Kindle mounted at $MNT (pid $PID). Eject it in Finder or run kindle-unmount when done."
+    exit 0
+  fi
+  if ! kill -0 "$PID" 2>/dev/null; then
+    echo "kindle-mount failed:" >&2; redact < "$LOG" >&2; rm -f "$PIDF"
+    if grep -q "extension not enabled\|requires approval" "$LOG"; then
+      echo "" >&2
+      echo "macOS hasn't enabled macFUSE's file system extension yet. Turn it on once in" >&2
+      echo "System Settings > General > Login Items & Extensions > File System Extensions" >&2
+      echo "(switch on macFUSE), then run kindle-mount again." >&2
+    fi
+    exit 1
+  fi
+  sleep 0.5
+done
+echo "still not mounted after 90 s; log so far:" >&2; redact < "$LOG" >&2
+echo "(left running as pid $PID; run kindle-unmount to stop it)" >&2
+exit 1

@@ -1,0 +1,24 @@
+#!/bin/bash
+# kindle-unmount: unmount the Kindle drive and release USB for kpush/Calibre.
+set -u
+MNT=/Volumes/Kindle
+PIDF="$HOME/Library/Caches/kindle-mount.pid"
+LOG="$HOME/Library/Logs/kindle-mount.log"
+redact() { sed -E 's/G[0-9A-Z]{3,}/GR…(redacted)/g'; }
+PID=""; [ -f "$PIDF" ] && PID="$(cat "$PIDF")"
+if mount | grep -q " on $MNT "; then
+  umount "$MNT" 2>&1 | redact || diskutil unmount "$MNT" 2>&1 | redact
+fi
+if [ -n "$PID" ]; then
+  for i in $(seq 1 30); do kill -0 "$PID" 2>/dev/null || break; sleep 0.5; done
+  if kill -0 "$PID" 2>/dev/null; then
+    echo "kindle-mtpfs (pid $PID) still running; asking it to stop" >&2
+    kill -TERM "$PID"
+    for i in $(seq 1 20); do kill -0 "$PID" 2>/dev/null || break; sleep 0.5; done
+  fi
+  if kill -0 "$PID" 2>/dev/null; then echo "kindle-mtpfs did not exit; USB may still be held" >&2; exit 1; fi
+  rm -f "$PIDF"
+fi
+if mount | grep -q " on $MNT "; then echo "still mounted at $MNT" >&2; exit 1; fi
+[ -f "$LOG" ] && tail -n 1 "$LOG" | redact
+echo "Kindle unmounted; USB released."

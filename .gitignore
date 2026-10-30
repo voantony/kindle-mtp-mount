@@ -1,0 +1,4 @@
+kindle-mtpfs
+*.o
+.DS_Store
+test/test_ops
