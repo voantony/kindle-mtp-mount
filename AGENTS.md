@@ -88,6 +88,16 @@ Kindle are permanent** (there's no Trash on the device).
    - Eject it in Finder or run `kindle-unmount` before using Calibre again.
    - The log is at `~/Library/Logs/kindle-mount.log`.
 
+## Mac app (optional)
+
+If the human wants the menu-bar app, build it with `app/build-app.sh`. This
+needs Xcode or the command line tools, and it writes `dist/Mount Kindle.app`.
+Copy the app to `/Applications` only if the human agrees. You can drive it
+with `open mountkindle://mount`, `open mountkindle://unmount` and
+`open mountkindle://quit`, and its log is `~/Library/Logs/MountKindle.log`.
+The same rules apply: don't touch System Settings, and the human does the
+file system extension step.
+
 ## Uninstall
 
 ```sh
