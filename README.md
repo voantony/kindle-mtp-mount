@@ -183,7 +183,11 @@ app in `Contents/Resources/Licenses`.
 
 ## Support
 
-If this saves you time and you'd like to say thanks, crypto tips are welcome. Always optional.
+If this saves you time and you'd like to say thanks, tips are welcome. Always optional.
+
+**Venmo:** [@Antony-Vo](https://venmo.com/u/Antony-Vo) (US)
+
+**Crypto:**
 
 | Coin | Address |
 | --- | --- |
