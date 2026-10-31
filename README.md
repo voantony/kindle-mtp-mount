@@ -1,5 +1,7 @@
 # kindle-mtp-mount
 
+**Mount a USB-connected MTP Kindle as a Finder drive on Apple silicon Macs (macFUSE + libmtp), with a menu-bar app and CLI.**
+
 Shows a Kindle that's plugged into a Mac by USB as a removable drive called
 **Kindle** in Finder, listed under **Locations** with an eject button, like a
 USB stick. You can browse it, copy books off it, and drag files onto it.
