@@ -9,14 +9,14 @@ USB stick. You can browse it, copy books off it, and drag files onto it.
 
 ## Install
 
-- **App (easiest):** download **[Mount-Kindle-0.1.1.dmg](https://github.com/voantony/kindle-mtp-mount/releases/download/v0.1.1/Mount-Kindle-0.1.1.dmg)**
-  from the [latest release](https://github.com/voantony/kindle-mtp-mount/releases/latest),
+- **App (easiest):** download **[Mount-Kindle-0.1.1.dmg](https://gitlab.com/antonyvo/kindle-mtp-mount/-/releases/v0.1.1/downloads/Mount-Kindle-0.1.1.dmg)**
+  from the [latest release](https://gitlab.com/antonyvo/kindle-mtp-mount/-/releases/permalink/latest),
   drag **Mount Kindle** to Applications, and open it (right-click → **Open**
   the first time; see [First launch](#mac-app)). You also need
   [macFUSE](https://macfuse.github.io/) 5.x with its file system extension
   turned on; see [Setup](#setup).
 - **With your AI agent:** give it this repo's link
-  (`https://github.com/voantony/kindle-mtp-mount`). [AGENTS.md](AGENTS.md)
+  (`https://gitlab.com/antonyvo/kindle-mtp-mount`). [AGENTS.md](AGENTS.md)
   tells it what to run and which steps you have to do yourself, and
   [install.sh](install.sh) does the rest.
 - **Manually (command line):** install [macFUSE](https://macfuse.github.io/)
@@ -120,7 +120,7 @@ loop and never resets the USB connection.
 <p align="center"><img src="docs/images/menu-illustration.png" width="440" alt="Illustration of the Mount Kindle menu: Mounted at /Volumes/Kindle, Mount, Unmount, Open in Finder, Read-only, Quit"></p>
 <p align="center"><sub>Illustration of the menu while mounted, drawn from the app's menu items (not a screenshot).</sub></p>
 
-Download it from the [latest release](https://github.com/voantony/kindle-mtp-mount/releases/latest)
+Download it from the [latest release](https://gitlab.com/antonyvo/kindle-mtp-mount/-/releases/permalink/latest)
 (`.dmg` or `.zip`), or build it yourself (below). It runs
 the same `kindle-mtpfs` helper, bundled inside the app together with libmtp
 and libusb, so Homebrew isn't needed on a Mac that only runs the app. macFUSE
