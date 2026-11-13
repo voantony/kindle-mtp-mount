@@ -1,5 +1,10 @@
 # kindle-mtp-mount
 
+[![Latest release](https://img.shields.io/github/v/release/voantony/kindle-mtp-mount)](https://github.com/voantony/kindle-mtp-mount/releases/latest)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Mount a Kindle (MTP) on macOS as a read-write removable drive in Finder: a menu-bar app (`.dmg`) and a CLI.
+
 Shows a Kindle that's plugged into a Mac by USB as a removable drive called
 **Kindle** in Finder, listed under **Locations** with an eject button, like a
 USB stick. You can browse it, copy books off it, and drag files onto it.
