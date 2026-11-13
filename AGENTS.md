@@ -41,7 +41,7 @@ Kindle are permanent** (there's no Trash on the device).
 
 3. **Get the code and run the installer.**
    ```sh
-   git clone https://gitlab.com/antonyvo/kindle-mtp-mount.git
+   git clone https://github.com/voantony/kindle-mtp-mount.git
    cd kindle-mtp-mount
    ./install.sh                  # or: ./install.sh --prefix /some/writable/bin
    ```
